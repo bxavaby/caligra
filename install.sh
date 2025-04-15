@@ -116,6 +116,10 @@ else
     echo -e "${GREEN}✓ Installed to /usr/local/bin/caligra${RESET}"
 fi
 
+echo -e "\n${BOLD}Cleaning up...${RESET}"
+rm -f caligra
+echo -e "✓ Removed temporary binary"
+
 echo -e "\n${BOLD}${GREEN}Installation complete!${RESET}"
 echo -e "Run '${BOLD}caligra help${RESET}' to get started."
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"

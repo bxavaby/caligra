@@ -150,28 +150,28 @@ func FormatWipeResult(result *WipeResult) string {
 		sb.WriteString(util.BRH.Render(message))
 		sb.WriteString("\n")
 	} else {
-		message := "✓ No sensitive metadata detected"
-		sb.WriteString(util.LBL.Render(message))
+		message := "[i] No sensitive metadata detected"
+		sb.WriteString(util.SEC.Render(message))
 		sb.WriteString("\n")
 	}
 
 	if result.Success {
-		sb.WriteString(util.NSH.Render("✓ File successfully processed"))
+		sb.WriteString(util.SEC.Render("✓ File successfully processed"))
 		sb.WriteString("\n")
 
 		if result.OutputPath != "" && result.OutputPath != result.OriginalPath {
-			message := fmt.Sprintf("Output saved to: %s", result.OutputPath)
+			message := fmt.Sprintf("[i] Output saved to: %s", result.OutputPath)
 			sb.WriteString(util.NSH.Render(message))
 			sb.WriteString("\n")
 		}
 
 		if result.BackupPath != "" {
-			message := fmt.Sprintf("Backup created at: %s", result.BackupPath)
+			message := fmt.Sprintf("[i] Backup created at: %s", result.BackupPath)
 			sb.WriteString(util.NSH.Render(message))
 			sb.WriteString("\n")
 		}
 	} else {
-		sb.WriteString(util.BRH.Render("[!] Processing completed with issues:"))
+		sb.WriteString(util.BRH.Render("[!] Processing completed with issues..."))
 		sb.WriteString("\n")
 
 		for _, err := range result.WipeErrors {
@@ -181,8 +181,8 @@ func FormatWipeResult(result *WipeResult) string {
 		}
 
 		if result.BackupPath != "" {
-			message := fmt.Sprintf("Original preserved at: %s", result.BackupPath)
-			sb.WriteString(util.NSH.Render(message))
+			message := fmt.Sprintf("[i] Original preserved at: %s", result.BackupPath)
+			sb.WriteString(util.SEC.Render(message))
 			sb.WriteString("\n")
 		}
 	}

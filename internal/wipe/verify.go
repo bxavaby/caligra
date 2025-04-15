@@ -116,7 +116,7 @@ func FormatVerificationResult(result *VerificationResult) string {
 	var sb strings.Builder
 
 	if result.Success {
-		sb.WriteString(util.NSH.Render("✓ File successfully processed and verified"))
+		sb.WriteString(util.SEC.Render("✓ File successfully processed and verified"))
 		sb.WriteString("\n")
 		return sb.String()
 	}
@@ -129,7 +129,7 @@ func FormatVerificationResult(result *VerificationResult) string {
 	if !result.MetadataRemoved {
 		message := fmt.Sprintf("[!] Found %d remaining sensitive fields that were not removed.",
 			len(result.RemainingFields))
-		sb.WriteString(util.LBL.Render(message))
+		sb.WriteString(util.BRH.Render(message))
 		sb.WriteString("\n")
 
 		for _, field := range result.RemainingFields {

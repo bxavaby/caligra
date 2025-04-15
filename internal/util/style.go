@@ -153,11 +153,11 @@ func SuccessSymbol() string {
 }
 
 func WarningSymbol() string {
-	return SEC.Render("[!]")
+	return BRH.Render("[!]")
 }
 
 func InfoSymbol() string {
-	return NSH.Render("[i]")
+	return SEC.Render("[i]")
 }
 
 func ErrorSymbol() string {

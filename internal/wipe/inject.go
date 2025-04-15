@@ -111,7 +111,7 @@ func FormatInjectionResult(result *ProfileInjectionResult) string {
 	var sb strings.Builder
 
 	if result.Success {
-		sb.WriteString(util.NSH.Render(fmt.Sprintf(
+		sb.WriteString(util.SEC.Render(fmt.Sprintf(
 			"✓ Profile successfully injected (%d fields)", len(result.FieldsAdded))))
 		sb.WriteString("\n")
 		return sb.String()
@@ -119,7 +119,7 @@ func FormatInjectionResult(result *ProfileInjectionResult) string {
 
 	if len(result.FieldsAdded) > 0 {
 		message := fmt.Sprintf("✓ Successfully added %d profile fields:", len(result.FieldsAdded))
-		sb.WriteString(util.NSH.Render(message))
+		sb.WriteString(util.LBL.Render(message))
 		sb.WriteString("\n")
 
 		for _, field := range result.FieldsAdded {
