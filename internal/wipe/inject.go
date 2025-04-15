@@ -6,6 +6,7 @@ package wipe
 import (
 	"fmt"
 	"slices"
+	"strings"
 	"time"
 
 	"caligra/internal/analyse"
@@ -107,32 +108,40 @@ func processDynamicFields(profile map[string]string) map[string]string {
 
 // user-friendly report of the injection
 func FormatInjectionResult(result *ProfileInjectionResult) string {
+	var sb strings.Builder
+
 	if result.Success {
-		return util.NSH.Render(fmt.Sprintf(
-			"✓ Profile successfully injected (%d fields)", len(result.FieldsAdded)))
+		sb.WriteString(util.NSH.Render(fmt.Sprintf(
+			"✓ Profile successfully injected (%d fields)", len(result.FieldsAdded))))
+		sb.WriteString("\n")
+		return sb.String()
 	}
 
-	var message string
-
 	if len(result.FieldsAdded) > 0 {
-		message += util.NSH.Render(fmt.Sprintf(
-			"✓ Successfully added %d profile fields:\n", len(result.FieldsAdded)))
+		message := fmt.Sprintf("✓ Successfully added %d profile fields:", len(result.FieldsAdded))
+		sb.WriteString(util.NSH.Render(message))
+		sb.WriteString("\n")
 
 		for _, field := range result.FieldsAdded {
 			value := result.Profile[field]
-			message += util.SUB.Render(fmt.Sprintf("  • %s: %s\n", field, value))
+			sb.WriteString("  ")
+			sb.WriteString(util.NSH.Render("• " + field + ": " + value))
+			sb.WriteString("\n")
 		}
 	}
 
 	if len(result.FieldsFailed) > 0 {
-		message += util.LBL.Render(fmt.Sprintf(
-			"! Failed to add %d profile fields:\n", len(result.FieldsFailed)))
+		message := fmt.Sprintf("! Failed to add %d profile fields:", len(result.FieldsFailed))
+		sb.WriteString(util.LBL.Render(message))
+		sb.WriteString("\n")
 
 		for _, field := range result.FieldsFailed {
 			value := result.Profile[field]
-			message += util.SUB.Render(fmt.Sprintf("  • %s: %s\n", field, value))
+			sb.WriteString("  ")
+			sb.WriteString(util.NSH.Render("• " + field + ": " + value))
+			sb.WriteString("\n")
 		}
 	}
 
-	return message
+	return sb.String()
 }

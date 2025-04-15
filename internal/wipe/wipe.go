@@ -13,7 +13,6 @@ import (
 	"caligra/internal/util"
 )
 
-// behavior of the wipe operation
 type WipeOptions struct {
 	// inject profile metadata after wiping?
 	InjectProfile bool
@@ -31,7 +30,6 @@ type WipeOptions struct {
 	SecureDelete bool
 }
 
-// default wiping behavior
 func DefaultWipeOptions() *WipeOptions {
 	return &WipeOptions{
 		InjectProfile: true,
@@ -42,7 +40,6 @@ func DefaultWipeOptions() *WipeOptions {
 	}
 }
 
-// results of the wipe operation
 type WipeResult struct {
 	Success       bool
 	OriginalPath  string
@@ -69,7 +66,7 @@ func WipeFile(path string, options *WipeOptions) (*WipeResult, error) {
 		return result, fmt.Errorf("invalid input file: %w", err)
 	}
 
-	// analyze to get metadata before wiping
+	// get metadata before wiping
 	report, err := analyse.Analyze(path)
 	if err != nil {
 		return result, fmt.Errorf("failed to analyze file: %w", err)
@@ -84,16 +81,16 @@ func WipeFile(path string, options *WipeOptions) (*WipeResult, error) {
 
 	outputPath := path
 	if options.CreateCopy {
-		// output path with .volena extension
+		// output with .volena ext
 		outputPath = util.GenerateOutputPath(path)
 		result.OutputPath = outputPath
 
-		// copy file
+		// copy
 		if err := util.SafeCopy(path, outputPath); err != nil {
 			return result, fmt.Errorf("failed to create output file: %w", err)
 		}
 	} else {
-		// backup of original first
+		// backup original
 		backupPath, err := util.CreateBackup(path)
 		if err != nil {
 			return result, fmt.Errorf("failed to create backup: %w", err)
@@ -101,7 +98,6 @@ func WipeFile(path string, options *WipeOptions) (*WipeResult, error) {
 		result.BackupPath = backupPath
 	}
 
-	// Use the output path for all operations from here
 	workingPath := outputPath
 
 	// wipe metadata
@@ -113,7 +109,7 @@ func WipeFile(path string, options *WipeOptions) (*WipeResult, error) {
 		return "Metadata removed", nil
 	})
 
-	// profile injection if requested
+	// profile injection
 	if options.InjectProfile && len(result.WipeErrors) == 0 {
 		injResult, err := InjectProfile(workingPath, options.CustomProfile)
 		if err != nil {
@@ -128,7 +124,7 @@ func WipeFile(path string, options *WipeOptions) (*WipeResult, error) {
 	}
 	result.Verification = verifyResult
 
-	// clean up based on options
+	// option-based clean up
 	if !options.CreateCopy && !options.KeepBackup && result.BackupPath != "" && len(result.WipeErrors) == 0 {
 		if options.SecureDelete {
 			_ = util.SecureOverwriteFile(result.BackupPath)
@@ -145,50 +141,65 @@ func WipeFile(path string, options *WipeOptions) (*WipeResult, error) {
 	return result, nil
 }
 
-// user-friendly report of the wipe operation
+// report of the wipe operation
 func FormatWipeResult(result *WipeResult) string {
 	var sb strings.Builder
 
 	if len(result.SensitiveData) > 0 {
-		fmt.Fprintf(&sb, "%s", util.SUB.Render(fmt.Sprintf(
-			"Found %d sensitive metadata fields\n", len(result.SensitiveData))))
+		message := fmt.Sprintf("[!] Found %d sensitive metadata fields", len(result.SensitiveData))
+		sb.WriteString(util.BRH.Render(message))
+		sb.WriteString("\n")
 	} else {
-		fmt.Fprintf(&sb, "%s", util.SUB.Render("✓ No sensitive metadata detected\n"))
+		message := "✓ No sensitive metadata detected"
+		sb.WriteString(util.LBL.Render(message))
+		sb.WriteString("\n")
 	}
 
 	if result.Success {
-		fmt.Fprintf(&sb, "%s", util.NSH.Render("[✓] File successfully processed\n"))
+		sb.WriteString(util.NSH.Render("✓ File successfully processed"))
+		sb.WriteString("\n")
 
 		if result.OutputPath != "" && result.OutputPath != result.OriginalPath {
-			fmt.Fprintf(&sb, "%s", util.SUB.Render(fmt.Sprintf(
-				"Output saved to: %s\n", result.OutputPath)))
+			message := fmt.Sprintf("Output saved to: %s", result.OutputPath)
+			sb.WriteString(util.NSH.Render(message))
+			sb.WriteString("\n")
 		}
 
 		if result.BackupPath != "" {
-			fmt.Fprintf(&sb, "%s", util.SUB.Render(fmt.Sprintf(
-				"Backup created at: %s\n", result.BackupPath)))
+			message := fmt.Sprintf("Backup created at: %s", result.BackupPath)
+			sb.WriteString(util.NSH.Render(message))
+			sb.WriteString("\n")
 		}
 	} else {
-		fmt.Fprintf(&sb, "%s", util.LBL.Render("[!] Processing completed with issues:\n"))
+		sb.WriteString(util.BRH.Render("[!] Processing completed with issues:"))
+		sb.WriteString("\n")
 
 		for _, err := range result.WipeErrors {
-			fmt.Fprintf(&sb, "%s", util.SUB.Render(fmt.Sprintf("  • %s\n", err)))
+			message := fmt.Sprintf("  • %s", err)
+			sb.WriteString(util.NSH.Render(message))
+			sb.WriteString("\n")
 		}
 
 		if result.BackupPath != "" {
-			fmt.Fprintf(&sb, "%s", util.NSH.Render(fmt.Sprintf(
-				"Original preserved at: %s\n", result.BackupPath)))
+			message := fmt.Sprintf("Original preserved at: %s", result.BackupPath)
+			sb.WriteString(util.NSH.Render(message))
+			sb.WriteString("\n")
 		}
+	}
+
+	if (result.Verification != nil && !result.Verification.Success) ||
+		(result.Injection != nil && !result.Injection.Success) {
+		sb.WriteString("\n")
 	}
 
 	// verification details
 	if result.Verification != nil && !result.Verification.Success {
-		fmt.Fprintf(&sb, "%s", FormatVerificationResult(result.Verification))
+		sb.WriteString(FormatVerificationResult(result.Verification))
 	}
 
 	// injection details
 	if result.Injection != nil && !result.Injection.Success {
-		fmt.Fprintf(&sb, "%s", FormatInjectionResult(result.Injection))
+		sb.WriteString(FormatInjectionResult(result.Injection))
 	}
 
 	return sb.String()

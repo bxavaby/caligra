@@ -118,4 +118,4 @@ fi
 
 echo -e "\n${BOLD}${GREEN}Installation complete!${RESET}"
 echo -e "Run '${BOLD}caligra help${RESET}' to get started."
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"

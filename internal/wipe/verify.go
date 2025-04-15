@@ -6,6 +6,7 @@ package wipe
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"caligra/internal/analyse"
 	"caligra/internal/formats"
@@ -112,35 +113,44 @@ func verifyProfileFields(metadata map[string]any, profile map[string]string) []s
 
 // user-friendly report of the verification
 func FormatVerificationResult(result *VerificationResult) string {
+	var sb strings.Builder
+
 	if result.Success {
-		return util.NSH.Render("✓ File successfully processed and verified")
+		sb.WriteString(util.NSH.Render("✓ File successfully processed and verified"))
+		sb.WriteString("\n")
+		return sb.String()
 	}
 
-	var message string
-
 	if !result.FileIntact {
-		message += util.LBL.Render("[!] File integrity check failed. File may be corrupted.\n")
+		sb.WriteString(util.LBL.Render("[!] File integrity check failed. File may be corrupted."))
+		sb.WriteString("\n")
 	}
 
 	if !result.MetadataRemoved {
-		message += util.LBL.Render(fmt.Sprintf(
-			"[!] Found %d remaining sensitive fields that were not removed.\n",
-			len(result.RemainingFields)))
+		message := fmt.Sprintf("[!] Found %d remaining sensitive fields that were not removed.",
+			len(result.RemainingFields))
+		sb.WriteString(util.LBL.Render(message))
+		sb.WriteString("\n")
 
 		for _, field := range result.RemainingFields {
-			message += util.SUB.Render(fmt.Sprintf("  • %s\n", field))
+			sb.WriteString("  ")
+			sb.WriteString(util.NSH.Render("• " + field))
+			sb.WriteString("\n")
 		}
 	}
 
 	if !result.ProfileInjected {
-		message += util.LBL.Render(fmt.Sprintf(
-			"[!] Profile injection incomplete (%d fields missing).\n",
-			len(result.MissingFields)))
+		message := fmt.Sprintf("[!] Profile injection incomplete (%d fields missing).",
+			len(result.MissingFields))
+		sb.WriteString(util.LBL.Render(message))
+		sb.WriteString("\n")
 
 		for _, field := range result.MissingFields {
-			message += util.SUB.Render(fmt.Sprintf("  • %s\n", field))
+			sb.WriteString("  ")
+			sb.WriteString(util.NSH.Render("• " + field))
+			sb.WriteString("\n")
 		}
 	}
 
-	return message
+	return sb.String()
 }
