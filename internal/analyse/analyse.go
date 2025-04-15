@@ -55,8 +55,6 @@ func Analyze(path string) (*AnalysisReport, error) {
 // finds metadata fields that may contain sensitive information
 func identifySensitiveFields(metadata map[string]any) []string {
 	var sensitive []string
-
-	// avoid flagging profile values
 	profileValues := getProfileValues()
 
 	for key, value := range metadata {
@@ -64,11 +62,17 @@ func identifySensitiveFields(metadata map[string]any) []string {
 			continue
 		}
 
-		if isProfileMetadata(key, fmt.Sprintf("%v", value), profileValues) {
+		// skip on profile match
+		strValue := fmt.Sprintf("%v", value)
+		if isProfileMetadata(key, strValue, profileValues) {
 			continue
 		}
 
 		if util.IsSensitiveField(key) {
+			if key == "CreateDate" && isProfileDate(strValue, profileValues["created"]) {
+				continue
+			}
+
 			sensitive = append(sensitive, key)
 		}
 	}
@@ -108,6 +112,14 @@ func isProfileMetadata(key string, value string, profileValues map[string]string
 	}
 
 	return false
+}
+
+func isProfileDate(value, profileDate string) bool {
+	normalizedValue := strings.ReplaceAll(value, ":", "-")
+	normalizedProfile := strings.ReplaceAll(profileDate, ":", "-")
+
+	return normalizedValue == normalizedProfile ||
+		strings.HasPrefix(normalizedValue, normalizedProfile)
 }
 
 // analyzes multiple files and returns their reports

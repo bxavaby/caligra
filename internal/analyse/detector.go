@@ -12,28 +12,25 @@ import (
 	"strings"
 )
 
-// represents a detected file type
 type FileType struct {
 	Format    string // "image", "audio", "video", "text"
 	Extension string // "jpg", "mp3", etc
 	MimeType  string // "image/jpeg", etc
 }
 
-// analyzes a file and returns its detected type
 func DetectFile(path string) (FileType, error) {
-	// Get extension for initial check
 	ext := strings.ToLower(filepath.Ext(path))
 	if ext != "" && ext[0] == '.' {
-		ext = ext[1:] // Remove leading dot
+		ext = ext[1:]
 	}
 
-	// 1st: magic numbers (most reliable)
+	// 1st magic numbers
 	ft, err := detectByMagicNumbers(path)
 	if err == nil && ft.Format != "" {
 		return ft, nil
 	}
 
-	// fall back: extension
+	// fallback to extension
 	ft = detectByExtension(ext)
 	if ft.Format != "" {
 		return ft, nil
