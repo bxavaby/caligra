@@ -1,0 +1,26 @@
+#   BYZRA ⸻ yogram.toml <>
+#  +----------------------------------------------+
+#    888   88 88888888 888PPP8b   ,dbPPPp ,8b.    |
+#    888ooo88 888  888 d88    `   d88ooP' 88'8o   |
+#          88 888  888 d8b PPY8 ,88' P'   88PPY8. |__________________________________________________
+#    PPPPPP8P 888oo888 Y8PPPPPP 88  do    8b   `Y' .toml <--| custom palette across the BYZRA Series +
+
+#   Created by: bxavaby
+#   Version: 1.0.0
+#   Last updated: 2025-4-10
+
+[metadata]
+author = "bxavaby"
+version = "1.0.0"
+description = "The BYZRA Series’ cross-tool palette."
+license = "MIT"
+created = "2025-4-9"
+updated = "2025-4-10"
+
+[colors]
+CHRM = "#C0C0C0" # chrome / silver
+HEAT = "#FF5C00" # heat orange
+HOTP = "#FF007F" # hot pink
+GUNM = "#444444" # gunmetal gray
+VBLK = "#121212" # void black
+CSTL = "#88AABB" # cool steel

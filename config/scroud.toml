@@ -1,0 +1,9 @@
+[watch]
+paths = [
+    # "/home/user/exports",
+    # "/mnt/ops/dropzone",
+    # "/srv/www/public"
+]
+
+[filter]
+extensions = [".md", ".mp3", ".jpg"]

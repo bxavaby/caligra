@@ -1,0 +1,42 @@
+# BYZRA ⸻ .gitignore
+# git ignore for CALIGRA
+
+# bin
+/caligra
+*.exe
+*.out
+
+# go
+*.o
+*.a
+*.so
+*.dylib
+*.test
+*.prof
+coverage.txt
+coverage.html
+
+# dependency
+/vendor/
+/Godeps/
+
+# project
+*.bak
+*.backup
+*.volena.*
+daemon.pid
+
+# configuration
+/.caligra/
+/tests/configs/
+
+# logs
+*.log
+/logs/
+.log/
+
+# testing files
+/samples/
+
+# guidelines
+comms.txt
