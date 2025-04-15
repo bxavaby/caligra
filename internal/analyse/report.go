@@ -23,8 +23,8 @@ func GenerateReport(report *AnalysisReport) string {
 	var sb strings.Builder
 
 	// info header
-	sb.WriteString(util.NSH.Render(fmt.Sprintf("File: %s\n", report.Path)))
-	sb.WriteString(util.NSH.Render(fmt.Sprintf("Type: %s (%s)\n\n", report.FileType.Format, report.FileType.MimeType)))
+	sb.WriteString(util.NSH.Render("File: ") + util.NSH.Render(report.Path) + "\n")
+	sb.WriteString(util.NSH.Render("Type: ") + util.NSH.Render(fmt.Sprintf("%s (%s)", report.FileType.Format, report.FileType.MimeType)) + "\n\n")
 
 	// no metadata
 	if len(report.Metadata) == 0 {
@@ -32,7 +32,8 @@ func GenerateReport(report *AnalysisReport) string {
 		return sb.String()
 	}
 
-	sb.WriteString(util.LBL.Render("Detected Metadata:\n"))
+	sb.WriteString(util.LBL.Render("Detected Metadata:"))
+	sb.WriteString("\n\n")
 
 	// sorted keys for consistent output
 	keys := make([]string, 0, len(report.Metadata))
@@ -69,18 +70,21 @@ func GenerateReport(report *AnalysisReport) string {
 			sb.WriteString(fmt.Sprintf(" %s %s: %s\n",
 				util.ORN.Render("•"),
 				util.NSH.Render(key),
-				valueStr))
+				util.NSH.Render(valueStr)))
 		}
 	}
 
 	// summary and recommendation
 	sb.WriteString("\n")
 	if sensitiveCount > 0 {
-		sb.WriteString(util.BRH.Render(fmt.Sprintf(
-			"[!] Found %d potentially sensitive metadata fields.\n", sensitiveCount)))
-		sb.WriteString(util.BRH.Render("[!] Consider using 'caligra wipe' to remove metadata.\n"))
+		warning := fmt.Sprintf("[!] Found %d potentially sensitive metadata fields.", sensitiveCount)
+		sb.WriteString(util.BRH.Render(warning) + "\n")
+
+		recommendation := "[i] Consider using 'caligra wipe' to remove metadata."
+		sb.WriteString(util.BRH.Render(recommendation) + "\n")
 	} else {
-		sb.WriteString(util.LBL.Render("✓ No sensitive metadata detected\n"))
+		message := "✓ No sensitive metadata detected"
+		sb.WriteString(util.LBL.Render(message) + "\n")
 	}
 
 	return sb.String()
