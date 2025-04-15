@@ -19,7 +19,7 @@ Metadata's oubliette.
 
 ---
 
-**CALIGRA** is a CLI metadata control utility for Linux, built to sanitize, analyze, and optionally subvert file metadata. It provides tools to detect, remove, and manipulate metadata in various file formats to enhance privacy and security.
+**CALIGRA** is a CLI metadata control utility for Linux, built to sanitize, analyze, and optionally subvert file metadata. It provides sub-commands to detect, remove, and manipulate metadata in various file formats, therefore enhancing privacy and security.
 
 ## Features
 
