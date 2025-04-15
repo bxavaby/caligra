@@ -1,8 +1,5 @@
-<p align="center" style="margin-bottom:0;">
-  <img src="../assets/caligra.png" alt="CALIGRA" width="420" style="display:block; margin-bottom:0;">
-  <a href="https://github.com/bxavaby/BYZRA">
-    <img src="../assets/bybyzra.png" alt="The BYZRA Series" width="72" style="margin-top:-8px;">
-  </a>
+<p align="center">
+  <img src="assets/caligra.png" alt="CALIGRA" width="420">
 </p>
 
 <p align="center">
@@ -10,7 +7,11 @@
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square"></a>
   <img src="https://img.shields.io/badge/Platform-Linux-darkred.svg?style=flat-square">
   <img src="https://img.shields.io/badge/Status-Alpha-orange.svg?style=flat-square">
+  <img src="https://img.shields.io/badge/Metadata-Sanitizer-82B366.svg?style=flat-square">
+  <img src="https://img.shields.io/badge/OpSec-Tool-444444.svg?style=flat-square">
 </p>
+
+---
 
 <p align="center"><i><b>
 Metadata dies where Anonymity begins.
@@ -217,3 +218,12 @@ CALIGRA is released under the MIT License. See the [LICENSE](LICENSE) file for d
 <p align="center">
 <i>Digital sovereignty through metadata control.</i>
 </p>
+
+---
+
+<p align="center">
+  <a href="https://github.com/bxavaby/BYZRA">
+    <img src="assets/bybyzra.png" alt="The BYZRA Series" width="72">
+  </a>
+</p>
+
