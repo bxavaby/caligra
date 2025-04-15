@@ -12,8 +12,8 @@ YELLOW="\033[33m"
 BLUE="\033[34m"
 RESET="\033[0m"
 
-echo -e "${BOLD}${BLUE}CALIGRA${RESET} Installation Script"
-echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "${BOLD}${RED}CALIGRA${RESET} Installation Script"
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 echo -e "\n${BOLD}Checking dependencies...${RESET}"
 
@@ -24,7 +24,7 @@ if ! command -v go &> /dev/null; then
 fi
 
 GO_VERSION=$(go version | awk '{print $3}' | sed 's/go//')
-echo -e "✓ Go ${GO_VERSION} found"
+echo -e "[i] Go ${GO_VERSION} found"
 
 if ! command -v exiftool &> /dev/null; then
     echo -e "${YELLOW}Warning: ExifTool not found${RESET}"
@@ -56,7 +56,7 @@ fi
 
 if command -v exiftool &> /dev/null; then
     EXIFTOOL_VERSION=$(exiftool -ver)
-    echo -e "✓ ExifTool ${EXIFTOOL_VERSION} found"
+    echo -e "[i] ExifTool ${EXIFTOOL_VERSION} found"
 fi
 
 if ! command -v ffmpeg &> /dev/null; then
@@ -118,8 +118,8 @@ fi
 
 echo -e "\n${BOLD}Cleaning up...${RESET}"
 rm -f caligra
-echo -e "✓ Removed temporary binary"
+echo -e "${GREEN}✓ Removed temporary binary${RESET}"
 
 echo -e "\n${BOLD}${GREEN}Installation complete!${RESET}"
 echo -e "Run '${BOLD}caligra help${RESET}' to get started."
-echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
