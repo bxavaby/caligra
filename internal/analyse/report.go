@@ -15,19 +15,16 @@ import (
 type AnalysisReport struct {
 	Path            string
 	FileType        FileType
-	Metadata        map[string]interface{}
+	Metadata        map[string]any
 	SensitiveFields []string
 }
 
-// formatted report for console output
 func GenerateReport(report *AnalysisReport) string {
 	var sb strings.Builder
 
 	// info header
 	sb.WriteString(util.NSH.Render(fmt.Sprintf("File: %s\n", report.Path)))
-	sb.WriteString(util.NSH.Render(fmt.Sprintf("Type: %s (%s)\n",
-		report.FileType.Format, report.FileType.MimeType)))
-	sb.WriteString("\n")
+	sb.WriteString(util.NSH.Render(fmt.Sprintf("Type: %s (%s)\n\n", report.FileType.Format, report.FileType.MimeType)))
 
 	// no metadata
 	if len(report.Metadata) == 0 {
@@ -123,7 +120,7 @@ func GenerateSimplifiedReport(report *AnalysisReport) string {
 }
 
 // converts a metadata value to string representation
-func formatValue(value interface{}) string {
+func formatValue(value any) string {
 	switch v := value.(type) {
 	case nil:
 		return ""
@@ -132,7 +129,7 @@ func formatValue(value interface{}) string {
 			return ""
 		}
 		return v
-	case []interface{}:
+	case []any:
 		if len(v) == 0 {
 			return ""
 		}
@@ -143,7 +140,7 @@ func formatValue(value interface{}) string {
 			}
 		}
 		return strings.Join(parts, ", ")
-	case map[string]interface{}:
+	case map[string]any:
 		if len(v) == 0 {
 			return ""
 		}

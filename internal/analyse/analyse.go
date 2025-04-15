@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"caligra/internal/config"
 	"caligra/internal/formats"
 	"caligra/internal/util"
 )
@@ -18,7 +19,6 @@ func Analyze(path string) (*AnalysisReport, error) {
 		return nil, fmt.Errorf("invalid file: %w", err)
 	}
 
-	// file type
 	fileType, err := DetectFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("file type detection failed: %w", err)
@@ -29,19 +29,16 @@ func Analyze(path string) (*AnalysisReport, error) {
 		return nil, fmt.Errorf("unsupported file type: %s", fileType.Extension)
 	}
 
-	// appropriate handler
 	handler, err := formats.GetHandler(fileType.Format)
 	if err != nil {
 		return nil, fmt.Errorf("no handler for format %s: %w", fileType.Format, err)
 	}
 
-	// extract metadata
 	metadata, err := handler.ExtractMetadata(path)
 	if err != nil {
 		return nil, fmt.Errorf("metadata extraction failed: %w", err)
 	}
 
-	// sensitive fields
 	sensitiveFields := identifySensitiveFields(metadata)
 
 	// generate report
@@ -59,8 +56,15 @@ func Analyze(path string) (*AnalysisReport, error) {
 func identifySensitiveFields(metadata map[string]any) []string {
 	var sensitive []string
 
-	for key := range metadata {
+	// avoid flagging profile values
+	profileValues := getProfileValues()
+
+	for key, value := range metadata {
 		if strings.HasPrefix(key, "_") {
+			continue
+		}
+
+		if isProfileMetadata(key, fmt.Sprintf("%v", value), profileValues) {
 			continue
 		}
 
@@ -70,6 +74,40 @@ func identifySensitiveFields(metadata map[string]any) []string {
 	}
 
 	return sensitive
+}
+
+func getProfileValues() map[string]string {
+	profile, err := config.LoadProfile()
+	if err != nil {
+		// Fallback to default profile
+		return config.GetDefaultProfile()
+	}
+	return profile
+}
+
+// does metadata match profile values?
+func isProfileMetadata(key string, value string, profileValues map[string]string) bool {
+	fieldMappings := map[string]string{
+		"Artist":       "author",
+		"Author":       "author",
+		"Creator":      "author",
+		"Software":     "software",
+		"CreateDate":   "created",
+		"DateCreated":  "created",
+		"Copyright":    "organization",
+		"Organization": "organization",
+		"Location":     "location",
+		"UserComment":  "comment",
+		"Comment":      "comment",
+	}
+
+	if profileKey, ok := fieldMappings[key]; ok {
+		if profileVal, exists := profileValues[profileKey]; exists && value == profileVal {
+			return true
+		}
+	}
+
+	return false
 }
 
 // analyzes multiple files and returns their reports

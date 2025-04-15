@@ -148,6 +148,22 @@ func SpinWhile(label string, fn func() (string, error)) (string, error) {
 	return res.out, res.err
 }
 
+func SuccessSymbol() string {
+	return LBL.Render("[✓]")
+}
+
+func WarningSymbol() string {
+	return SEC.Render("[!]")
+}
+
+func InfoSymbol() string {
+	return NSH.Render("[i]")
+}
+
+func ErrorSymbol() string {
+	return BRH.Render("[X]")
+}
+
 // ╭─ CLEAR ─────────────────────────────────────╮
 func Wiper() {
 	var cmd *exec.Cmd
