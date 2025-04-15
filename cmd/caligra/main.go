@@ -82,7 +82,7 @@ func handleAnalyseCommand(args []string) {
 		os.Exit(1)
 	}
 
-	fmt.Println(util.LBL.Render("[✓] Analysis completed successfully"))
+	fmt.Println(util.LBL.Render("[✓] Analysis completed successfully\n"))
 	fmt.Println(result)
 }
 
@@ -132,7 +132,7 @@ func handleWipeCommand(args []string) {
 		os.Exit(1)
 	}
 
-	fmt.Println(util.LBL.Render("[✓] Wipe completed successfully"))
+	fmt.Println(util.LBL.Render("[✓] Wipe completed successfully\n"))
 	fmt.Println(result)
 }
 
@@ -206,9 +206,9 @@ func handleDaemonCommand(args []string) {
 		pidStr := strings.TrimSpace(string(pidBytes))
 		fmt.Println(util.NSH.Render("[~] Stopping daemon (PID " + pidStr + ")..."))
 
-		// Send signal to daemon process
-		// In a real implementation, we might use IPC or signals
-		// For this example, we just remove the PID file
+		// send signal to daemon process
+		// in a real implementation, might use IPC/signals
+		// for this, just remove the PID file
 		if err := os.Remove(pidFile); err != nil {
 			fmt.Println(util.LBL.Render("[X] Could not remove PID file"))
 			os.Exit(1)
@@ -222,8 +222,8 @@ func handleDaemonCommand(args []string) {
 			pidStr := strings.TrimSpace(string(pidBytes))
 			fmt.Println(util.NSH.Render("[...] Daemon is running (PID " + pidStr + ")"))
 
-			// In a real implementation, we would get more status info
-			// This could include watched directories, processed files, etc.
+			// in a real implementation, get more status info
+			// this could include watched directories, processed files, etc.
 		} else {
 			fmt.Println(util.NSH.Render("[...] Daemon is not running"))
 		}
