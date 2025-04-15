@@ -14,7 +14,7 @@
 ---
 
 <p align="center"><i><b>
-Metadata dies where Anonymity begins.
+Metadata's oubliette.
 </b></i></p>
 
 ---
@@ -171,7 +171,7 @@ This profile creates a communal signature, helping to anonymize and obscure your
 
 ## Architecture
 
-CALIGRA's architecture is built around a modular core called PURGE (Programmable Universal Resource Generic Erasure):
+CALIGRA's architecture is built around a modular core called SCOUR (Scheduled Cleanup and Overwrite of User Records):
 
 ```
 caligra/
