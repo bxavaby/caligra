@@ -12,7 +12,7 @@ YELLOW="\033[33m"
 BLUE="\033[34m"
 RESET="\033[0m"
 
-echo -e "${BOLD}${RED}CALIGRA${RESET} Installation Script"
+echo -e "${BOLD}${YELLOW}CALIGRA${RESET} Installation Script"
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 echo -e "\n${BOLD}Checking dependencies...${RESET}"

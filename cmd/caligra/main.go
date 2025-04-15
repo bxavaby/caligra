@@ -45,7 +45,7 @@ func main() {
 		printVersion()
 	default:
 		util.Wiper()
-		fmt.Println(util.LBL.Render("[!] Unknown command: " + command))
+		fmt.Println(util.BRH.Render("[!] Unknown command: " + command + "\n"))
 		printUsage()
 		os.Exit(1)
 	}
@@ -78,7 +78,7 @@ func handleAnalyseCommand(args []string) {
 	})
 
 	if err != nil {
-		fmt.Println(util.LBL.Render("[X] Analysis failed: " + err.Error()))
+		fmt.Println(util.BRH.Render("[X] Analysis failed: " + err.Error()))
 		os.Exit(1)
 	}
 
@@ -90,15 +90,15 @@ func handleWipeCommand(args []string) {
 	util.Wiper()
 
 	if len(args) < 1 {
-		fmt.Println(util.LBL.Render("[X] No file specified for wiping"))
-		fmt.Println(util.SUB.Render("Usage: caligra wipe <file> [options]"))
+		fmt.Println(util.BRH.Render("[X] No file specified for wiping"))
+		fmt.Println(util.NSH.Render("Usage: caligra wipe <file> [options]"))
 		os.Exit(1)
 	}
 
 	path := args[0]
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		fmt.Println(util.LBL.Render("[X] File not found: " + path))
+		fmt.Println(util.BRH.Render("[X] File not found: " + path))
 		os.Exit(1)
 	}
 
@@ -128,7 +128,7 @@ func handleWipeCommand(args []string) {
 	})
 
 	if err != nil {
-		fmt.Println(util.LBL.Render("[X] Wipe failed: " + err.Error()))
+		fmt.Println(util.BRH.Render("[X] Wipe failed: " + err.Error()))
 		os.Exit(1)
 	}
 
@@ -140,8 +140,8 @@ func handleDaemonCommand(args []string) {
 	util.Wiper()
 
 	if len(args) < 1 {
-		fmt.Println(util.LBL.Render("[X] Daemon mode requires a subcommand"))
-		fmt.Println(util.SUB.Render("Usage: caligra daemon [on|off|status]"))
+		fmt.Println(util.BRH.Render("[X] Daemon mode requires a subcommand"))
+		fmt.Println(util.NSH.Render("Usage: caligra daemon [on|off|status]"))
 		os.Exit(1)
 	}
 
@@ -149,7 +149,7 @@ func handleDaemonCommand(args []string) {
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Println(util.LBL.Render("[X] Cannot determine home directory"))
+		fmt.Println(util.BRH.Render("[X] Cannot determine home directory"))
 		os.Exit(1)
 	}
 
@@ -158,7 +158,7 @@ func handleDaemonCommand(args []string) {
 	switch subcommand {
 	case "on", "start":
 		if isDaemonRunning(pidFile) {
-			fmt.Println(util.NSH.Render("[!] Daemon is already running"))
+			fmt.Println(util.BRH.Render("[!] Daemon is already running"))
 			os.Exit(0)
 		}
 
@@ -166,24 +166,24 @@ func handleDaemonCommand(args []string) {
 
 		d, err := daemon.NewDaemon("")
 		if err != nil {
-			fmt.Println(util.LBL.Render("[X] Failed to create daemon: " + err.Error()))
+			fmt.Println(util.BRH.Render("[X] Failed to create daemon: " + err.Error()))
 			os.Exit(1)
 		}
 
 		if err := d.Start(); err != nil {
-			fmt.Println(util.LBL.Render("[X] Failed to start daemon: " + err.Error()))
+			fmt.Println(util.BRH.Render("[X] Failed to start daemon: " + err.Error()))
 			os.Exit(1)
 		}
 
 		pid := os.Getpid()
 		if err := os.MkdirAll(filepath.Dir(pidFile), 0755); err != nil {
-			fmt.Println(util.LBL.Render("[!] Could not create daemon directory"))
+			fmt.Println(util.BRH.Render("[!] Could not create daemon directory"))
 		}
 
 		pidBytes := make([]byte, 0, 16) // pre-allocate reasonable capacity for pid
 		pidBytes = fmt.Appendf(pidBytes, "%d", pid)
 		if err := os.WriteFile(pidFile, pidBytes, 0644); err != nil {
-			fmt.Println(util.LBL.Render("[!] Could not write PID file"))
+			fmt.Println(util.BRH.Render("[!] Could not write PID file"))
 		}
 
 		fmt.Println(util.NSH.Render("[✓] Daemon started successfully"))
@@ -193,13 +193,13 @@ func handleDaemonCommand(args []string) {
 
 	case "off", "stop":
 		if !isDaemonRunning(pidFile) {
-			fmt.Println(util.NSH.Render("[!] Daemon is not running"))
+			fmt.Println(util.BRH.Render("[!] Daemon is not running"))
 			os.Exit(0)
 		}
 
 		pidBytes, err := os.ReadFile(pidFile)
 		if err != nil {
-			fmt.Println(util.LBL.Render("[X] Could not read daemon PID"))
+			fmt.Println(util.BRH.Render("[X] Could not read daemon PID"))
 			os.Exit(1)
 		}
 
@@ -210,11 +210,11 @@ func handleDaemonCommand(args []string) {
 		// in a real implementation, might use IPC/signals
 		// for this, just remove the PID file
 		if err := os.Remove(pidFile); err != nil {
-			fmt.Println(util.LBL.Render("[X] Could not remove PID file"))
+			fmt.Println(util.BRH.Render("[X] Could not remove PID file"))
 			os.Exit(1)
 		}
 
-		fmt.Println(util.NSH.Render("[✓] Daemon stopped"))
+		fmt.Println(util.LBL.Render("[✓] Daemon stopped"))
 
 	case "status":
 		if isDaemonRunning(pidFile) {
@@ -229,8 +229,8 @@ func handleDaemonCommand(args []string) {
 		}
 
 	default:
-		fmt.Println(util.LBL.Render("[X] Unknown daemon command: " + subcommand))
-		fmt.Println(util.SUB.Render("Usage: caligra daemon [on|off|status]"))
+		fmt.Println(util.BRH.Render("[X] Unknown daemon command: " + subcommand))
+		fmt.Println(util.NSH.Render("Usage: caligra daemon [on|off|status]"))
 		os.Exit(1)
 	}
 }
