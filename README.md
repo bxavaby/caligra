@@ -14,7 +14,7 @@
 ---
 
 <p align="center"><i><b>
-Metadata dies where Anonymity begins.
+Metadata's oubliette.
 </b></i></p>
 
 ---
