@@ -63,12 +63,12 @@ func GenerateReport(report *AnalysisReport) string {
 		if isSensitive {
 			sensitiveCount++
 			sb.WriteString(fmt.Sprintf(" %s %s: %s\n",
-				util.ORN.Render("!"),
+				util.LBL.Render("!"),
 				util.NSH.Render(key),
 				util.NSH.Render(valueStr)))
 		} else {
 			sb.WriteString(fmt.Sprintf(" %s %s: %s\n",
-				util.ORN.Render("•"),
+				util.LBL.Render("•"),
 				util.NSH.Render(key),
 				util.NSH.Render(valueStr)))
 		}
@@ -80,8 +80,14 @@ func GenerateReport(report *AnalysisReport) string {
 		warning := fmt.Sprintf("[!] Found %d potentially sensitive metadata fields.", sensitiveCount)
 		sb.WriteString(util.BRH.Render(warning) + "\n")
 
-		recommendation := "[i] Consider using 'caligra wipe' to remove metadata."
-		sb.WriteString(util.BRH.Render(recommendation) + "\n")
+		// already processed file?
+		if strings.Contains(report.Path, ".volena.") {
+			info := "[i] This file has already been processed by CALIGRA. Consider checking profile configuration."
+			sb.WriteString(util.NSH.Render(info) + "\n")
+		} else {
+			recommendation := "[i] Consider using 'caligra wipe' to remove metadata."
+			sb.WriteString(util.NSH.Render(recommendation) + "\n")
+		}
 	} else {
 		message := "✓ No sensitive metadata detected"
 		sb.WriteString(util.LBL.Render(message) + "\n")

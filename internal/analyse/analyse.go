@@ -57,22 +57,21 @@ func identifySensitiveFields(metadata map[string]any) []string {
 	var sensitive []string
 	profileValues := getProfileValues()
 
+	fmt.Println("DEBUG: Profile values loaded:", profileValues)
+
 	for key, value := range metadata {
 		if strings.HasPrefix(key, "_") {
 			continue
 		}
 
-		// skip on profile match
 		strValue := fmt.Sprintf("%v", value)
+
 		if isProfileMetadata(key, strValue, profileValues) {
+			fmt.Printf("DEBUG: Skipping profile field: %s = %s\n", key, strValue)
 			continue
 		}
 
 		if util.IsSensitiveField(key) {
-			if key == "CreateDate" && isProfileDate(strValue, profileValues["created"]) {
-				continue
-			}
-
 			sensitive = append(sensitive, key)
 		}
 	}
@@ -91,35 +90,41 @@ func getProfileValues() map[string]string {
 
 // does metadata match profile values?
 func isProfileMetadata(key string, value string, profileValues map[string]string) bool {
-	fieldMappings := map[string]string{
-		"Artist":       "author",
-		"Author":       "author",
-		"Creator":      "author",
-		"Software":     "software",
-		"CreateDate":   "created",
-		"DateCreated":  "created",
-		"Copyright":    "organization",
-		"Organization": "organization",
-		"Location":     "location",
-		"UserComment":  "comment",
-		"Comment":      "comment",
+	lowerKey := strings.ToLower(key)
+
+	profileMappings := map[string]string{
+		"artist":       "author",
+		"author":       "author",
+		"creator":      "author",
+		"software":     "software",
+		"createdate":   "created",
+		"datecreated":  "created",
+		"copyright":    "organization",
+		"organization": "organization",
+		"location":     "location",
+		"usercomment":  "comment",
+		"comment":      "comment",
 	}
 
-	if profileKey, ok := fieldMappings[key]; ok {
-		if profileVal, exists := profileValues[profileKey]; exists && value == profileVal {
-			return true
-		}
+	profileKey, exists := profileMappings[lowerKey]
+	if !exists {
+		return false
 	}
 
-	return false
-}
+	profileValue, hasValue := profileValues[profileKey]
+	if !hasValue {
+		return false
+	}
 
-func isProfileDate(value, profileDate string) bool {
-	normalizedValue := strings.ReplaceAll(value, ":", "-")
-	normalizedProfile := strings.ReplaceAll(profileDate, ":", "-")
+	if profileKey == "created" {
+		normalizedValue := strings.ReplaceAll(value, ":", "-")
+		normalizedProfile := strings.ReplaceAll(profileValue, ":", "-")
 
-	return normalizedValue == normalizedProfile ||
-		strings.HasPrefix(normalizedValue, normalizedProfile)
+		return normalizedValue == normalizedProfile ||
+			strings.HasPrefix(normalizedValue, normalizedProfile)
+	}
+
+	return strings.EqualFold(value, profileValue)
 }
 
 // analyzes multiple files and returns their reports
