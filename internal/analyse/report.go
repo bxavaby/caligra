@@ -66,12 +66,12 @@ func GenerateReport(report *AnalysisReport) string {
 			sensitiveCount++
 			sb.WriteString(fmt.Sprintf(" %s %s: %s\n",
 				util.ORN.Render("!"),
-				util.LBL.Render(key),
+				util.NSH.Render(key),
 				util.NSH.Render(valueStr)))
 		} else {
 			sb.WriteString(fmt.Sprintf(" %s %s: %s\n",
 				util.ORN.Render("•"),
-				util.SUB.Render(key),
+				util.NSH.Render(key),
 				valueStr))
 		}
 	}
