@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/caligra.png" alt="CALIGRA" width="420">
+  <img src="./assets/caligra.png" alt="CALIGRA" width="420">
 </p>
 
 <p align="center">
@@ -223,7 +223,7 @@ CALIGRA is released under the MIT License. See the [LICENSE](LICENSE) file for d
 
 <p align="center">
   <a href="https://github.com/bxavaby/BYZRA">
-    <img src="assets/bybyzra.png" alt="The BYZRA Series" width="72">
+    <img src="./assets/bybyzra.png" alt="The BYZRA Series" width="72">
   </a>
 </p>
 
