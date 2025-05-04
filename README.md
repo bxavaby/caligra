@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/caligra.png" alt="CALIGRA" width="320">
+  <img src="./assets/caligra.png" alt="CALIGRA" width="240">
 </p>
 
 <p align="center">
